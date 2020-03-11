@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+<!--- Just want to have a picture or something here
+{% block content %}
+    {% for project in projects %}
+        <article class="media content-section">
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + project.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ project.author.username }}</a>
+              <small class="text-muted">{{ project.date_created.strftime('%Y-%m-%d') }}</small>
+            </div>
+            <h2><a class="article-title" href="{{ url_for('project', project_id=project.id) }}">{{ project.title }}</a></h2>
+          </div>
+        </article>
+    {% endfor %}
+{% endblock content %} -->

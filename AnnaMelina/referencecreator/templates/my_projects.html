@@ -1,0 +1,40 @@
+<!-- Only want to show this is user is logged in. Should there be a if user.is_authenticated...? -->
+{% extends "layout.html" %}
+{% block content %}
+    <article class="media content-section">
+        <div class="media-body">
+            <h1 class="article-title">My Projects</h1>
+        </div>
+    </article>
+    <article class="media content-section">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                  <th scope="col">Project name</th>
+                  <th scope="col">Date created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                    <tr>
+                      <th scope="row"><a class="nav-item nav-link" href="{{ url_for('project') }}">{{ project.title }}</a></th>
+                      <td>{{ project.date_created }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </article>
+    <main role="main" class="container">
+        <div class="col-md-4">
+            <div class="content-section">
+            <h3>Our Sidebar</h3>
+                <p class='text-muted'>You can put any information here you'd like.
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-light"><a class="nav-item nav-link" href="{{ url_for('new_project') }}">Create New Project</a></li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </main>
+<!-- How put Sidebar on the side? -->
+{% endblock content %}

@@ -1,0 +1,124 @@
+<!-- All this will only show if the user is logged in. How do we do then? -->
+{% extends "layout.html" %}
+{% block content %}
+  <article class="media content-section">
+    <div class="media-body">
+      <h1 class="article-title">{{ project.title }}</h1>
+    </div>
+  </article>
+  <article>
+    <h3>References</h3>
+      <table class="table table-hover">
+            <thead>
+                <tr>
+                  <th scope="col">Project name</th>
+                  <th scope="col">Date created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                    <tr>
+                      <th scope="row">{{ project.title }}</th>
+                      <td>{{ project.date_created }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+      {% for reference in references %}
+        <div>
+          <p><!-- add reference as a new paragraph ?? or something else? want to show all info --> </p>
+          <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('update_reference', post_id=post.id) }}">Update</a>
+          <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+        </div>
+      {% endfor %}
+     <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('add_reference', reference_id=reference.id) }}">Add Reference</a>
+    <!-- reference_id or project_id above? -->
+  </article>
+  <div class="col-md-4">
+    <div class="content-section">
+    <h3>Our Sidebar</h3>
+      <p class='text-muted'> You can put any information here you'd like.
+        <ul class="list-group">
+          <li class="list-group-item list-group-item-light">Rename project</li>  <!-- turn into button/link? See below -->
+      <!-- <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('rename_project', project_id=project.id) }}">Rename project</a> -->
+          <li class="list-group-item list-group-item-light">Delete project</li>
+        </ul>
+      </p>
+    </div>
+  </div>
+
+
+<!-- Don't know how much of this below we need -->
+  <div class="content-section">
+    <h4>Comments</h4>
+    {% if current_user.is_authenticated %}
+    <div class="media">
+      <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+      <div class="media-body">
+        <form method="POST" action="">
+          <div class="article-metadata">
+            <div class="form-group">
+<!--                  {{ form.content.label(class="form-control-label") }}-->
+                  {% if form.content.errors %}
+                      {{ form.content(class="form-control form-control-lg is-invalid", rows="3", placeholder="Leave your comment here") }}
+                      <div class="invalid-feedback">
+                          {% for error in form.content.errors %}
+                              <span>{{ error }}</span>
+                          {% endfor %}
+                      </div>
+                  {% else %}
+                      {{ form.content(class="form-control form-control-lg", rows="3", placeholder="Leave your comment here") }}
+                  {% endif %}
+              </div>
+            {{ form.csrf_token }}
+            {{ form.submit(class="btn btn-outline-info") }}
+          </div>
+        </form>
+      </div>
+    </div>
+    {% else %}
+    <div class="container">
+      <div class="row">
+        <div class="col-12"><p class="text-center"><b>You need to be logged in to be able to comment.</b></p></div>
+      </div>
+    </div>
+    {% endif %}
+    {% for comment in comments %}
+      <div class="media">
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+        <div class="media-body">
+          <div class="article-metadata">
+            <div class="container">
+              <div class="row">
+                <div class="col-6"><b>{{ comment.user.username }}</b></div>
+                <div class="col-6" style="text-align: right">{{ comment.date_posted.strftime('%Y-%m-%d %H:%M') }}</div>
+              </div>
+              <div class="row">
+                <div class="col-sm"><p class="text-justify">{{ comment.content }}</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <!-- Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete Post?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
